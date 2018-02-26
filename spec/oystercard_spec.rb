@@ -21,6 +21,10 @@ describe Oystercard do
       expect{subject.top_up 1}.to change{ subject.balance}.by 1
     end
 
+    it 'raises an error message if new balance > 90 pounds' do
+      expect {subject.top_up(subject.limit + 1)}.to raise_error 'Sorry the new balance would exceed the limit!'
+    end
+
   end
 
 end
