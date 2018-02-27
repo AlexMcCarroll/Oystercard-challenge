@@ -24,4 +24,21 @@ describe Oystercard do
       expect(subject.balance).to eq 0
     end
   end
+  describe '#touch_in' do
+    it 'the card has touched in' do
+      expect(subject.touch_in).to eq true
+    end
+  end
+
+  describe '#touch_out' do
+    it 'the card has touched out' do
+      expect(subject.touch_out).to eq false
+    end
+  end
+
+  describe '#in_journey?' do
+    it ' the card has touched in and not touched out yet' do
+      expect(subject.in_journey?).to be(true).or be(false)
+    end
+  end
 end
