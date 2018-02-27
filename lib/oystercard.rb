@@ -1,10 +1,12 @@
 # This is the Oystercard class
 class Oystercard
   attr_reader :balance, :limit, :in_station
-
-  def initialize
-    @balance = 0
-    @limit = 90
+  ZERO = 0
+  ONE = 1
+  LIMIT = 90
+  def initialize(balance = ZERO, limit = LIMIT)
+    @balance = balance
+    @limit = limit
     @in_station = false
   end
 
@@ -18,6 +20,7 @@ class Oystercard
   end
 
   def touch_in
+    raise 'Sorry you need to top up' if @balance < ONE
     @in_station = true
   end
 
