@@ -14,16 +14,10 @@ describe Oystercard do
       expect { subject.top_up Oystercard::ONE }.to change { subject.balance }.by Oystercard::ONE
     end
     it "raises an error message if new balance > #{Oystercard::LIMIT} pounds" do
-      expect { subject.top_up(subject.limit + Oystercard::ONE) }.to raise_error 'Sorry the new balance would exceed the limit!'
+      expect { subject.top_up(Oystercard::LIMIT + 1) }.to raise_error 'Sorry the new balance would exceed the limit!'
     end
   end
-  describe '#deduct' do
-    it 'deducts the fare from the card balance' do
-      subject.top_up(Oystercard::ONE)
-      subject.deduct(Oystercard::ONE)
-      expect(subject.balance).to eq Oystercard::ZERO
-    end
-  end
+
   describe '#touch_in' do
     it "raises an error message if balance is less than #{Oystercard::ONE} pound" do
       expect(subject.balance).to be < Oystercard::ONE
@@ -39,6 +33,11 @@ describe Oystercard do
     it 'the card has touched out' do
       expect(subject.touch_out).to eq false
     end
+    it "deducts #{Oystercard::FARE} from the card when touched out" do
+      subject.top_up(Oystercard::ONE)
+      expect { subject.touch_out }.to change { subject.balance }.by(-Oystercard::FARE)
+    end
+
   end
 
   describe '#in_journey?' do
