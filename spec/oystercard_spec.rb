@@ -1,5 +1,8 @@
 require 'oystercard'
 describe Oystercard do
+  subject(:Oystercard) { Oystercard.new }
+  let(:fake_station) { double :station }
+
   describe '#balance' do
     it { is_expected.to respond_to :balance }
     it "has a balance eq to #{Oystercard::ZERO}" do
@@ -21,28 +24,36 @@ describe Oystercard do
   describe '#touch_in' do
     it "raises an error message if balance is less than #{Oystercard::ONE} pound" do
       expect(subject.balance).to be < Oystercard::ONE
-      expect { subject.touch_in }.to raise_error(RuntimeError)
+      expect { subject.touch_in(fake_station) }.to raise_error(RuntimeError)
     end
     it 'the card has touched in' do
       subject.top_up(Oystercard::ONE)
-      expect(subject.touch_in).to eq true
+      expect(subject.touch_in(fake_station)).to eq fake_station
+    end
+    it 'remembers touch in station' do
+      subject.top_up(Oystercard::ONE)
+      subject.touch_in(fake_station)
+      expect(subject.entry_station).to eq fake_station
     end
   end
 
   describe '#touch_out' do
-    it 'the card has touched out' do
-      expect(subject.touch_out).to eq false
-    end
     it "deducts #{Oystercard::FARE} from the card when touched out" do
       subject.top_up(Oystercard::ONE)
-      expect { subject.touch_out }.to change { subject.balance }.by(-Oystercard::FARE)
+      expect { subject.touch_out(fake_station) }.to change { subject.balance }.by(-Oystercard::FARE)
     end
-
+    it 'the card has touched out' do
+      expect(subject.touch_out(fake_station)).to eq fake_station
+    end
+    it 'forgets the entry station' do
+      subject.touch_out(fake_station)
+      expect(subject.exit_station).to eq fake_station
+    end
   end
 
   describe '#in_journey?' do
-    it ' the card has touched in and not touched out yet' do
-      expect(subject.in_journey?).to be(true).or be(false)
+    it 'the card has touched in and not touched out yet' do
+      expect(subject.in_journey?(fake_station)).to eq fake_station
     end
   end
 end
