@@ -9,18 +9,18 @@ class Oystercard
     @journey_history = []
   end
 
-  def top_up(pound)
-    raise 'Sorry the new balance would exceed the limit!' if limit(pound)
-    @balance += pound
+  def top_up(amount)
+    raise 'Sorry the new balance would exceed the limit!' if @balance + amount > LIMIT
+    @balance += amount
   end
 
   def touch_in(station)
-    raise 'Sorry you need to top up' if @balance < FARE
+    raise 'Sorry you need to top up' if balance < FARE
     @entry_station = station
   end
 
   def touch_out(station)
-    deduct_fare(FARE)
+    deduct(FARE)
     @journey_history << { entry: @entry_station, exit: station }
     @entry_station = nil
   end
@@ -31,10 +31,7 @@ class Oystercard
 
   private
 
-  def limit(pound)
-    (@balance + pound) > LIMIT
-  end
-  def deduct_fare(pound)
-    @balance -= pound
+  def deduct(amount)
+    @balance -= amount
   end
 end
