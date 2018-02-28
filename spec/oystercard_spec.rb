@@ -1,6 +1,5 @@
 require 'oystercard'
 describe Oystercard do
-  subject(:Oystercard) { Oystercard.new }
   let(:fake_station) { double :station }
   limit = Oystercard::LIMIT
   fare = Oystercard::FARE

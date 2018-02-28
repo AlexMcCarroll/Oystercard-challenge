@@ -1,13 +1,13 @@
 # This is the Oystercard class
 class Oystercard
-  attr_reader :balance, :limit, :in_station, :entry_station, :exit_station
+  attr_reader :balance, :entry_station, :exit_station, :journey_history
   LIMIT = 90
   FARE = 1
-  def initialize(balance = 0, limit = LIMIT)
-    @balance = balance
-    @limit = limit
+  def initialize
+    @balance = 0
     @entry_station = nil
     @exit_station = nil
+    @journey_history = []
   end
 
   def top_up(pound)
