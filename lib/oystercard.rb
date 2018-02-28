@@ -1,14 +1,11 @@
 # This is the Oystercard class
 class Oystercard
   attr_reader :balance, :limit, :in_station, :entry_station, :exit_station
-  ZERO = 0
-  ONE = 1
   LIMIT = 90
   FARE = 1
-  def initialize(balance = ZERO, limit = LIMIT)
+  def initialize(balance = 0, limit = LIMIT)
     @balance = balance
     @limit = limit
-    # @in_station = false
     @entry_station = nil
     @exit_station = nil
   end
@@ -19,26 +16,21 @@ class Oystercard
   end
 
   def touch_in(station)
-    raise 'Sorry you need to top up' if minimal
-    # @in_station = true
+    raise 'Sorry you need to top up' if @balance < FARE
     @entry_station = station
   end
 
   def touch_out(station)
     deduct_fare(FARE)
-    # @in_station = false
+    @entry_station = nil
     @exit_station = station
   end
 
-  def in_journey?(station)
-    @entry_station = station
+  def in_journey?
+    @entry_station != nil
   end
 
   private
-
-  def minimal
-    @balance < ONE
-  end
 
   def limit(pound)
     (@balance + pound) > LIMIT
