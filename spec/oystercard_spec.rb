@@ -1,12 +1,18 @@
 require 'oystercard'
 describe Oystercard do
   let(:fake_station) { double :station }
+  let(:fake_station2) { double :station2 }
   limit = Oystercard::LIMIT
   fare = Oystercard::FARE
 
   describe '#balance' do
     it "has a balance eq to 0" do
       expect(subject.balance).to eq 0
+    end
+  end
+  describe '#journey_history' do
+    it "has an empty array" do
+      expect(subject.journey_history).to eq []
     end
   end
   describe '#top_up' do
@@ -19,7 +25,7 @@ describe Oystercard do
   end
 
   describe '#touch_in' do
-    it "raises an error message if balance is less than #{1} pound" do
+    it "raises an error message if balance is less than 1 pound" do
       expect(subject.balance).to be < fare
       expect { subject.touch_in(fake_station) }.to raise_error(RuntimeError)
     end
@@ -37,14 +43,14 @@ describe Oystercard do
   describe '#touch_out' do
     it "deducts #{fare} from the card when touched out" do
       subject.top_up(fare)
-      expect { subject.touch_out(fake_station) }.to change { subject.balance }.by(-fare)
+      expect { subject.touch_out(fake_station2) }.to change { subject.balance }.by(-fare)
     end
-    it 'the card has touched out' do
-      expect(subject.touch_out(fake_station)).to eq fake_station
-    end
-    it 'forgets the entry station' do
-      subject.touch_out(fake_station)
-      expect(subject.exit_station).to eq fake_station
+    it "stores hash in journey_history array" do
+      subject.top_up(fare)
+      subject.touch_in(fake_station)
+      subject.touch_out(fake_station2)
+      expect(subject.journey_history[0][:entry]).to eq fake_station
+      expect(subject.journey_history[0][:exit]).to eq fake_station2
     end
   end
 

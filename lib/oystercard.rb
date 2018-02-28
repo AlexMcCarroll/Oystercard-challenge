@@ -1,12 +1,11 @@
 # This is the Oystercard class
 class Oystercard
-  attr_reader :balance, :entry_station, :exit_station, :journey_history
+  attr_reader :balance, :entry_station, :journey_history
   LIMIT = 90
   FARE = 1
   def initialize
     @balance = 0
     @entry_station = nil
-    @exit_station = nil
     @journey_history = []
   end
 
@@ -22,8 +21,8 @@ class Oystercard
 
   def touch_out(station)
     deduct_fare(FARE)
+    @journey_history << { entry: @entry_station, exit: station }
     @entry_station = nil
-    @exit_station = station
   end
 
   def in_journey?
